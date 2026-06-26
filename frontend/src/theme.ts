@@ -1,0 +1,43 @@
+export const COLORS = {
+  bg: '#0B0F17',
+  panel: '#111827',
+  surface: '#151D2A',
+  border: 'rgba(255,255,255,0.08)',
+  borderLight: 'rgba(255,255,255,0.12)',
+  text: '#E2E8F0',
+  muted: '#8892A6',
+  dim: '#6B7280',
+  hostile: '#FF5A5A',
+  hostileGlow: 'rgba(255, 90, 90, 0.25)',
+  friendly: '#3DDCFF',
+  friendlyGlow: 'rgba(61, 220, 255, 0.2)',
+  interceptor: '#FFB547',
+  interceptorGlow: 'rgba(255, 181, 71, 0.25)',
+  jammer: '#A855F7',
+  jammerGlow: 'rgba(168, 85, 247, 0.25)',
+  swarm: '#FB923C',
+  swarmGlow: 'rgba(251, 146, 60, 0.25)',
+  accent: '#4ADE80',
+  accentGlow: 'rgba(74, 222, 128, 0.2)',
+  warning: '#FFC857',
+  warningGlow: 'rgba(255, 200, 87, 0.2)',
+  cyan: '#3DDCFF',
+  blue: '#3B82F6',
+  grid: 'rgba(255, 255, 255, 0.03)',
+  gridRing: 'rgba(255, 255, 255, 0.06)',
+  gridLabel: 'rgba(136, 146, 170, 0.25)',
+  radarSweep: 'rgba(61, 220, 255, 0.04)',
+  radarLine: 'rgba(61, 220, 255, 0.2)',
+  trail: 'rgba(255, 255, 255, 0.08)',
+  labelBg: 'rgba(11, 15, 23, 0.85)',
+} as const
+
+export const FONT = "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif"
+export const FONT_MONO = "'JetBrains Mono', 'Consolas', 'Courier New', monospace"
+
+export const WORLD = {
+  min: -12000,
+  max: 12000,
+  range: 12000,
+  rings: [2000, 4000, 6000, 8000, 10000, 12000],
+} as const
