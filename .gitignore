@@ -18,6 +18,8 @@ virtualenv/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.pyre/
+.pytype/
 .coverage
 coverage/
 htmlcov/
@@ -32,16 +34,16 @@ build/
 *.whl
 MANIFEST
 
+# General caches
+.cache/
+.ipynb_checkpoints/
+
 # ──────────────────────────────────────────────
 # Node / TypeScript (Vite)
 # ──────────────────────────────────────────────
 
 node_modules/
-frontend/node_modules/
-
-# Vite cache & build output
 .vite/
-frontend/dist/
 
 # TypeScript build info
 *.tsbuildinfo
@@ -75,14 +77,6 @@ backend/simulation/models/*.zip
 # TensorBoard / experiment logs
 runs/
 lightning_logs/
-
-# ──────────────────────────────────────────────
-# Build Artifacts (PyInstaller)
-# ──────────────────────────────────────────────
-
-# PyInstaller output (already covered by dist/ above)
-*.exe
-*.msi
 
 # ──────────────────────────────────────────────
 # IDEs & Editors
@@ -129,3 +123,11 @@ Icon?
 *.log
 *.pid
 npm-debug.log*
+
+# ──────────────────────────────────────────────
+# Temporary files
+# ──────────────────────────────────────────────
+
+*.tmp
+*.temp
+*.bak
