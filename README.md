@@ -311,7 +311,7 @@ After 800,000 steps of PPO training, the AI agent achieves **statistical parity*
 ## Roadmap
 
 - [ ] **Unify simulation models**: Merge legacy PyQt6 `model/simulation.py` with `backend/simulation/` or retire the desktop app
-- [ ] **Add license file**: Choose and add an open-source license
+- [x] **Add license file**: MIT License
 - [ ] **CI/CD pipeline**: GitHub Actions with automated testing and linting
 - [ ] **Expand test coverage**: Unit tests for simulator, physics, radar, and policies
 - [ ] **Additional RL algorithms**: Experiment with DQN, SAC, or A2C
@@ -324,7 +324,7 @@ After 800,000 steps of PPO training, the AI agent achieves **statistical parity*
 
 ## License
 
-> **TODO:** This project does not currently have a license file. A license should be added before public distribution.
+Distributed under the [MIT License](LICENSE).
 
 ---
 
