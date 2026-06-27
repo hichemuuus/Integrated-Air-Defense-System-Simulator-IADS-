@@ -12,53 +12,48 @@ echo.
 where python >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Python not found in PATH
-    pause
-    exit /b 1
+    pause & exit /b 1
 )
 
 where node >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Node.js not found in PATH
-    pause
-    exit /b 1
+    pause & exit /b 1
 )
 
 where rustc >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Rust not found — install from https://rustup.rs
-    pause
-    exit /b 1
+    pause & exit /b 1
 )
 
-:: ── Detect target triple for sidecar naming ──────────────
+:: Detect target triple for sidecar binary naming
 for /f "tokens=*" %%i in ('rustc -vV ^| findstr host') do set "HOST_TRIPLE=%%i"
 set "HOST_TRIPLE=%HOST_TRIPLE:host: =%"
 echo [INFO] Target triple: %HOST_TRIPLE%
 
-:: ── Python virtual environment ───────────────────────────
-echo [1/6] Setting up Python virtual environment...
+:: ── Step 1: Python environment + backend build ────────────
+echo [1/5] Setting up Python virtual environment...
 if not exist "venv" (
     python -m venv venv
 )
 
-echo [2/6] Installing backend dependencies...
-call venv\Scripts\pip install -q -r backend\requirements.txt 2>&1
+echo [1/5] Installing backend dependencies...
+call venv\Scripts\pip install -q -r backend\requirements.txt
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Failed to install Python dependencies
-    pause
-    exit /b 1
+    pause & exit /b 1
 )
 
-:: Also install PyInstaller if not present
-call venv\Scripts\pip install -q pyinstaller 2>&1
+:: Install PyInstaller for backend executable
+call venv\Scripts\pip install -q pyinstaller
 
-:: ── Build backend with PyInstaller ───────────────────────
-echo [3/6] Building backend executable with PyInstaller...
+echo [2/5] Building backend executable with PyInstaller...
 if exist "dist\iads-server" rmdir /s /q "dist\iads-server"
 
-call venv\Scripts\python -c "import sys; from pathlib import Path; root = Path(r'%CD%')"
+:: Generate PyInstaller spec with project-root-relative paths
 call venv\Scripts\python -c "
-import json, uuid
+import sys
 from pathlib import Path
 root = Path(r'%CD%')
 
@@ -98,50 +93,37 @@ with open('iads-server.spec', 'w') as f:
 print('Spec file generated')
 "
 
-call venv\Scripts\pyinstaller --clean iads-server.spec 2>&1
+call venv\Scripts\pyinstaller --clean iads-server.spec
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] PyInstaller build failed
-    pause
-    exit /b 1
+    pause & exit /b 1
 )
 
 if not exist "dist\iads-server\iads-server.exe" (
     echo [ERROR] Backend executable not found at dist\iads-server\iads-server.exe
-    pause
-    exit /b 1
+    pause & exit /b 1
 )
 echo        Backend executable built: dist\iads-server\iads-server.exe
 
-:: ── Build frontend ───────────────────────────────────────
-echo [4/6] Building frontend...
-cd frontend
-call npm install 2>&1
+:: ── Step 3: Frontend build ────────────────────────────────
+echo [3/5] Building frontend...
+pushd frontend
+call npm install
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] npm install failed
-    pause
-    exit /b 1
+    pause & exit /b 1
 )
 
-call npx vite build 2>&1
+call npx vite build
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Frontend build failed
-    pause
-    exit /b 1
+    pause & exit /b 1
 )
-cd ..
+popd
 echo        Frontend built to frontend\dist
 
-:: ── Install frontend in backend dist ─────────────────────
-echo [5/6] Copying frontend to backend distribution...
-if not exist "dist\iads-server\_frontend" (
-    echo [ERROR] Frontend dist not in backend package — build issue
-    echo        Attempting manual copy...
-    if not exist "dist\iads-server\_frontend" mkdir "dist\iads-server\_frontend"
-    xcopy /E /I /Y "frontend\dist\*" "dist\iads-server\_frontend\" >nul
-)
-
-:: ── Copy backend exe to Tauri sidecar location ───────────
-echo        Copying to Tauri sidecar location...
+:: ── Step 4: Copy backend binary to Tauri sidecar location ─
+echo [4/5] Copying backend to Tauri sidecar location...
 copy /Y "dist\iads-server\iads-server.exe" "frontend\src-tauri\binaries\iads-server-%HOST_TRIPLE%.exe" >nul
 if %ERRORLEVEL% NEQ 0 (
     echo [WARN] Could not copy sidecar — check paths
@@ -149,21 +131,27 @@ if %ERRORLEVEL% NEQ 0 (
     echo        Sidecar placed at frontend\src-tauri\binaries\iads-server-%HOST_TRIPLE%.exe
 )
 
-:: ── Build Tauri application ──────────────────────────────
-echo [6/6] Building Tauri desktop application...
+:: ── Step 5: Build Tauri desktop application ──────────────
+echo [5/5] Building Tauri desktop application...
 echo        This compiles Rust and creates the installer.
 echo        May take several minutes on first build.
 echo.
 
-cd frontend
-call npx tauri build 2>&1
+:: externalBin is NOT in tauri.conf.json (it would break `tauri dev`).
+:: We inject it at build time via --config so the release app bundles the sidecar.
+set "TAURI_OVERRIDE=%TEMP%\tauri_release_override.json"
+powershell -Command "Write-Output '{\"bundle\":{\"externalBin\":[\"binaries/iads-server\"]}}' | Set-Content -Encoding ASCII '%TAURI_OVERRIDE%'"
+
+pushd frontend
+call npx tauri build --config "%TAURI_OVERRIDE%"
 set BUILD_EXIT=%ERRORLEVEL%
-cd ..
+popd
+
+del "%TAURI_OVERRIDE%" 2>nul
 
 if %BUILD_EXIT% NEQ 0 (
     echo [ERROR] Tauri build failed — see output above
-    pause
-    exit /b %BUILD_EXIT%
+    pause & exit /b %BUILD_EXIT%
 )
 
 :: ── Show results ─────────────────────────────────────────

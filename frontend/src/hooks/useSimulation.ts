@@ -225,12 +225,18 @@ export function useSimulation() {
 
   const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return
+    performance.mark('ws:connect')
     try {
       const ws = new WebSocket(WS_URL)
       wsRef.current = ws
 
-      ws.onopen = () => { mockModeRef.current = false; reconnectRef.current = 0 }
+      ws.onopen = () => {
+        performance.mark('ws:open')
+        mockModeRef.current = false
+        reconnectRef.current = 0
+      }
       ws.onmessage = (event) => {
+        performance.mark('ws:first_message')
         try {
           const data = JSON.parse(event.data)
           if (!mockModeRef.current) {
@@ -275,6 +281,7 @@ export function useSimulation() {
     frameRef.current = requestAnimationFrame(runLoop)
     const fallbackTimer = setTimeout(() => {
       if (!mockModeRef.current && (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN)) {
+        performance.mark('ws:fallback_mock')
         startMock()
       }
     }, 3000)

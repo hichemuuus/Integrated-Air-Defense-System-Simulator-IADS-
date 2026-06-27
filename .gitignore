@@ -45,6 +45,9 @@ MANIFEST
 node_modules/
 .vite/
 
+# Build output
+frontend/dist/
+
 # TypeScript build info
 *.tsbuildinfo
 

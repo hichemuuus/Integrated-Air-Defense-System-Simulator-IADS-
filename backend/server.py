@@ -1,19 +1,27 @@
 import os
 import sys
+import time
 import asyncio
 import json
 import argparse
 import atexit
 import signal
 from pathlib import Path
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from simulation_runner import SimulationRunner, ControlMessage
 from comparison_coordinator import ComparisonCoordinator
 
+_T_START = time.perf_counter()
+def _log_timing(label: str):
+    print(f"[TIMING] {label}: {time.perf_counter() - _T_START:.3f}s", flush=True)
+
+_log_timing("import_start")
+
 app = FastAPI(title="IADS Command Center")
+_log_timing("fastapi_app_created")
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,10 +30,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+_log_timing("middleware_added")
 
 runners: dict[str, SimulationRunner] = {}
+_log_timing("runner_dict_created")
 
 frontend_dist = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+_log_timing("frontend_dist_resolved")
 
 
 def stop_all_runners():
@@ -79,6 +90,9 @@ def _mount_frontend():
 
 @app.get("/api/status")
 async def status():
+    if not getattr(status, "_first_call", False):
+        status._first_call = True
+        print(f"[TIMING] backend_accepting_requests: {time.perf_counter() - _T_START:.3f}s", flush=True)
     return {"status": "online", "simulations": len(runners)}
 
 
@@ -86,6 +100,15 @@ async def status():
 async def shutdown():
     stop_all_runners()
     return {"status": "shutdown"}
+
+
+@app.post("/api/timing")
+async def receive_timing(request: Request):
+    data = await request.json()
+    print(f"[TIMING-FRONTEND]")
+    for k, v in sorted(data.items()):
+        print(f"  {k}: {v}ms")
+    return {"ok": True}
 
 
 @app.websocket("/ws/sim/{sim_id}")
@@ -155,6 +178,7 @@ async def websocket_sim_default(websocket: WebSocket):
 
 
 _mount_frontend()
+_log_timing("frontend_mounted")
 
 
 @app.websocket("/ws/compare")
@@ -244,6 +268,7 @@ def main():
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
+    _log_timing("args_parsed")
 
     if not frontend_dist.is_dir() or not (frontend_dist / "index.html").is_file():
         print("  Frontend build not found at frontend/dist/.")
@@ -251,13 +276,16 @@ def main():
         print("  Starting API server only.\n")
 
     import uvicorn
-    print(f"\n{'='*50}")
-    print(f"  IADS Command Center")
-    print(f"  API + WebSocket: http://{args.host}:{args.port}")
+    _log_timing("uvicorn_imported")
+    print(f"\n{'='*50}", flush=True)
+    print(f"  IADS Command Center", flush=True)
+    print(f"  API + WebSocket: http://{args.host}:{args.port}", flush=True)
     if frontend_dist.is_dir() and (frontend_dist / "index.html").is_file():
-        print(f"  Frontend:       http://{args.host}:{args.port}")
-    print(f"{'='*50}\n")
+        print(f"  Frontend:       http://{args.host}:{args.port}", flush=True)
+    print(f"{'='*50}\n", flush=True)
     try:
+        print(f"[TIMING] uvicorn_run_start: {time.perf_counter() - _T_START:.3f}s")
+        sys.stdout.flush()
         uvicorn.run(app, host=args.host, port=args.port, log_level="warning")
     finally:
         stop_all_runners()

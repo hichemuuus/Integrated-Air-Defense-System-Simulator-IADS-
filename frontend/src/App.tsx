@@ -4,6 +4,7 @@ import { useSimStore } from './store/simulationStore'
 import type { Toast } from './store/simulationStore'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import TacticalDisplay from './components/TacticalDisplay'
+import Scene3D from './features/visualization3d/Scene3D'
 import SimulationControls from './components/SimulationControls'
 import TrackDetail from './components/TrackDetail'
 import ContextMenu from './components/ContextMenu'
@@ -122,6 +123,13 @@ function ToastContainer() {
 }
 
 export default function App() {
+  const t0 = performance.now()
+  performance.mark('app:render_start')
+
+  useEffect(() => {
+    performance.mark('app:mounted')
+  }, [])
+
   const { sendControl } = useSimulation()
   const mode = useSimStore(s => s.mode)
   const tracks = useSimStore(s => s.tracks)
@@ -217,6 +225,7 @@ export default function App() {
     }
   }, [addToast])
 
+  const [viewMode, setViewMode] = useState<'tactical' | 'cinematic'>('tactical')
   const [overlays, setOverlays] = useState<Overlays>({
     grid: true, radar: true, trails: true, labels: true,
   })
@@ -291,6 +300,21 @@ export default function App() {
         <header className="flex-shrink-0 flex items-center justify-between px-4 py-1.5 border-b overflow-visible" style={{ minHeight: '40px', borderColor: 'rgba(255,255,255,0.06)', background: '#111827' }}>
           <div className="flex items-center gap-2 shrink min-w-0 overflow-visible">
             <span className="text-3xs font-mono font-bold tracking-[0.1em] text-white/70 whitespace-nowrap">// IADS // SIM MODE</span>
+            <span className="text-3xs text-white/[0.15]">|</span>
+            <button
+              onClick={() => setViewMode(v => v === 'tactical' ? 'cinematic' : 'tactical')}
+              className="px-2 py-1 text-3xs font-bold uppercase tracking-wider transition-colors"
+              style={{
+                color: viewMode === 'cinematic' ? '#3DDCFF' : 'rgba(255,255,255,0.3)',
+                border: '1px solid',
+                borderColor: viewMode === 'cinematic' ? 'rgba(61,220,255,0.3)' : 'rgba(255,255,255,0.08)',
+                borderRadius: '1px',
+                background: viewMode === 'cinematic' ? 'rgba(61,220,255,0.08)' : 'transparent',
+                fontFamily: "'JetBrains Mono', monospace",
+              }}
+            >
+              {viewMode === 'tactical' ? '2D TAC' : '3D CIN'}
+            </button>
             <span className="text-3xs text-white/[0.15]">|</span>
             <div className="flex items-center gap-1.5 overflow-visible flex-shrink-0">
               <SimulationControls
@@ -391,26 +415,32 @@ export default function App() {
             </div>
           </div>
           <div className="flex-1 relative">
-            <TacticalDisplay
-              overlays={overlays}
-              onContextMenu={setContextMenu}
-            />
-            {selectedTrack && (
-              <TrackDetail track={selectedTrack} onClose={() => setSelectedTrack(null)} onLaunch={() => {
-                if (selectedTrack.classification === 'HOSTILE') {
-                  sendControl('launch', { target_id: selectedTrack.id })
-                  setSelectedTrack(null)
-                }
-              }} />
-            )}
-            {contextMenu && (
-              <ContextMenu
-                x={contextMenu.x}
-                y={contextMenu.y}
-                trackId={contextMenu.trackId}
-                onLaunch={(id) => { sendControl('launch', { target_id: id }); setContextMenu(null) }}
-                onClose={() => setContextMenu(null)}
-              />
+            {viewMode === 'tactical' ? (
+              <>
+                <TacticalDisplay
+                  overlays={overlays}
+                  onContextMenu={setContextMenu}
+                />
+                {selectedTrack && (
+                  <TrackDetail track={selectedTrack} onClose={() => setSelectedTrack(null)} onLaunch={() => {
+                    if (selectedTrack.classification === 'HOSTILE') {
+                      sendControl('launch', { target_id: selectedTrack.id })
+                      setSelectedTrack(null)
+                    }
+                  }} />
+                )}
+                {contextMenu && (
+                  <ContextMenu
+                    x={contextMenu.x}
+                    y={contextMenu.y}
+                    trackId={contextMenu.trackId}
+                    onLaunch={(id) => { sendControl('launch', { target_id: id }); setContextMenu(null) }}
+                    onClose={() => setContextMenu(null)}
+                  />
+                )}
+              </>
+            ) : (
+              <Scene3D />
             )}
           </div>
         </div>
