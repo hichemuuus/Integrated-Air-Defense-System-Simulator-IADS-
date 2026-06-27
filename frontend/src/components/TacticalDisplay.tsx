@@ -288,7 +288,7 @@ export default function TacticalDisplay({ overlays, onContextMenu }: Props) {
         <PPIDisplay selectedTrack={allTracks.find(t => t.id === selectedTrackId) ?? null} />
       </div>
       <div className="absolute bottom-2 right-2">
-        <PPIDisplay selectedTrack={allTracks.find(t => t.id === selectedTrackId) ?? null} mini />
+        <PPIDisplay selectedTrack={allTracks.find(t => t.id === selectedTrackId) ?? null} />
       </div>
       <LegendPanel />
     </div>

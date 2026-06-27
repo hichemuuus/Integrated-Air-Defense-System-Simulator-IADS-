@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { Track, Explosion, MissMarker, ThreatAlert, EventEntry, RadarSite, ScenarioConfig, PolicyId, AIDecision, ComparisonState, ViewMode, DestroyedGhost } from '../types'
+import type { Track, Explosion, MissMarker, ThreatAlert, EventEntry, RadarSite, ScenarioConfig, PolicyId, AIDecision, ComparisonState, DestroyedGhost } from '../types'
 
 export interface TimelineSnapshot {
   simTime: number
@@ -62,7 +62,6 @@ export interface SimStoreState {
   scenario: ScenarioConfig
   activePolicy: PolicyId
   aiDecisions: AIDecision[]
-  viewMode: ViewMode
   comparison: ComparisonState
   responseTime: number
 
@@ -91,7 +90,6 @@ export interface SimStoreActions {
   setScenario: (config: Partial<ScenarioConfig>) => void
   setActivePolicy: (policy: PolicyId) => void
   addAIDecision: (decision: AIDecision) => void
-  setViewMode: (mode: ViewMode) => void
   setComparison: (state: Partial<ComparisonState>) => void
   setResponseTime: (time: number) => void
   setComparisonStatsA: (stats: { kills: number; misses: number; launched: number; leakers: number; threats_engaged: number[]; inventory_remaining: number }) => void
@@ -128,7 +126,6 @@ const INITIAL: SimStoreState = {
   scenario: { ...DEFAULT_SCENARIO },
   activePolicy: 'PPO_800k',
   aiDecisions: [],
-  viewMode: 'command',
   comparison: {
     active: false,
     policyA: 'PPO_800k',
@@ -196,8 +193,6 @@ export const useSimStore = create<SimStore>((set) => ({
     set((state) => ({
       aiDecisions: [decision, ...state.aiDecisions].slice(0, 100),
     })),
-
-  setViewMode: (mode: ViewMode) => set({ viewMode: mode }),
 
   setComparisonStatsA: (stats) => set({ comparisonStatsA: stats }),
   setComparisonStatsB: (stats) => set({ comparisonStatsB: stats }),

@@ -81,17 +81,18 @@ view/                # Legacy PyQt6 view
 
 ## Running the Tournament
 
-```bash
-python -c "
+```python
+import sys
+sys.path.insert(0, 'backend')
+
 from simulation.tournament import Tournament
-from simulation.policies import BaselinePolicy, PriorityPolicy
+from simulation.policies import BaselinePolicy
 from simulation.trained_policy import TrainedPolicy
 
 t = Tournament(num_runs=100)
-t.register('PPO', lambda: TrainedPolicy('models/ppo_iads.zip'))
+t.register('PPO', lambda: TrainedPolicy('backend/simulation/models/ppo_iads.zip'))
 t.register('Baseline', BaselinePolicy)
 t.run()
 t.save_html('report.html')
 t.save_csv('results.csv')
-"
 ```

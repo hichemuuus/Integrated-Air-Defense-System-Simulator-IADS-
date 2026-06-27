@@ -1,92 +1,145 @@
 # Repository Cleanup Report
 
-## Files Removed
+## 1. Junk Files Deleted
 
 | Category | Items | Description |
 |---|---|---|
-| Tournament results | 10 directories | Historical 50-seed runs, superseded by 1,000-seed evaluation |
-| Session working notes | 9 files | `prompt1.md`–`prompt5.md`, `plan.md`, `PROJECT_CONTEXT.md`, `RESUME_PROMPT.md`, `skills.md` |
-| Empty directories | 3 | `build/`, `dist/`, `models/` |
-| Training artifact | 1 | `backend/simulation/models/evaluations.npz` |
-| **Total** | **23 items** | |
+| Virtual environment | `venv/` | Recreatable with `python -m venv venv` |
+| Python caches | `__pycache__/` (all directories), `*.pyc` | Compiled bytecode, regenerated on import |
+| pytest cache | `.pytest_cache/` | Test runner cache |
+| Frontend build | `frontend/dist/`, `frontend/node_modules/` | Build output and dependencies (recreatable) |
+| Rust build cache | `frontend/src-tauri/target/`, `frontend/src-tauri/binaries/` | ~500 MB of Rust artifacts |
+| TypeScript build info | `frontend/tsconfig.app.tsbuildinfo`, `frontend/tsconfig.node.tsbuildinfo` | Incremental compilation cache |
+| Temporary artifact | `# PROMPT_ENGINEERING_SKILL.md` | Prompt engineering reference, not a project file |
+| Empty directory | `tests/` (root) | Placeholder directory with no contents |
+| **Total** | **Thousands of files** | ~several GB of disk space recovered |
 
-## Files Moved
+## 2. Root-Level Duplicates Removed
 
-| File | From | To |
+| File | Status | Canonical Location |
 |---|---|---|
-| `tournament_stats_1000/` | root | `evaluation/tournament_results/` |
-| `BOT_API.md` | root | `docs/BOT_API.md` |
-| `protocol-schema.json` | root | `docs/protocol-schema.json` |
-| `run_training.ps1` | root | `training/run_training.ps1` (copy kept at root) |
+| `package.json` | Deleted (empty `{"dependencies": {}}`) | Frontend has its own at `frontend/package.json` |
+| `BOT_API.md` | Deleted | `docs/BOT_API.md` |
+| `protocol-schema.json` | Deleted | `docs/protocol-schema.json` |
+| `run_training.ps1` | Deleted | `training/run_training.ps1` |
 
-## Files Created
+## 3. Dead Code Removed
 
-| File | Description |
+### Python
+
+| File | Change |
 |---|---|
-| `docs/ARCHITECTURE.md` | System architecture overview, component dependency map |
-| `docs/TRAINING.md` | RL training guide: environment, action space, reward, CLI usage |
-| `docs/EVALUATION.md` | Tournament framework documentation and results summary |
-| `docs/CONTRIBUTING.md` | Developer setup guide, PR guidelines, code organization |
+| `backend/simulation_runner.py:3` | Removed unused `import json` |
+| `backend/comparison_coordinator.py:1` | Removed unused `import os` |
+| `backend/compare_policies.py:50-53` | Removed dead `fmt()` function (replaced by `fmt_delta()`) |
+| `backend/simulation/train_sb3.py:5` | Removed unused `import numpy as np` |
+| `backend/simulation/simulator.py:554-555` | Removed dead `clear_events()` method (never called) |
+| `view/main_window.py:22` | Removed unused constant `COLOR_UNKNOWN` |
+| `view/main_window.py:258-259` | Removed dead `clear_threats()` method (never called) |
 
-## Directories Created
+### TypeScript
 
-| Directory | Purpose |
+| File | Change |
 |---|---|
-| `training/` | RL training scripts and configs |
-| `evaluation/` | Tournament and analysis tools |
-| `docs/` | Project documentation |
-| `tests/` | Test suite (placeholder) |
+| `frontend/src/App.tsx:15` | Removed unused `import TournamentResults` |
+| `frontend/src/App.tsx:227` | Removed dead `showTournament` state (never set to true) |
+| `frontend/src/App.tsx:466-468` | Removed dead `<TournamentResults>` render block |
+| `frontend/src/store/simulationStore.ts:65,94,131,200` | Removed dead `viewMode` field and `setViewMode` action (never read by any component) |
+| `frontend/src/types.ts:4` | Removed dead `ViewMode` type (no longer referenced) |
 
-## Dependencies Removed
+### Preserved (intentionally left as extension points)
 
-**requirements.txt**: None removed. All 5 listed dependencies are actively used.
-**package.json**: None removed. All 17 dependencies are actively used.
-
-**Dependencies ADDED to requirements.txt** (were missing):
-
-| Package | Used By |
+| Item | Reason |
 |---|---|
-| `gymnasium>=1.0.0` | `gym_env/env.py` — RL environment |
-| `stable-baselines3>=2.4.0` | `trained_policy.py`, `train_sb3.py` — PPO algorithm |
-| `scipy>=1.14.0` | Statistical analysis scripts |
-| `matplotlib>=3.9.0` | Plotting scripts |
-| `seaborn>=0.13.0` | Plotting scripts |
+| `Tournament` class (`tournament.py`) | CLI tool and framework; used via `python -m simulation.tournament` |
+| `ScenarioGenerator` class | Documented public API utility class |
+| `_POLICY_MAP` default entries | Document frontend config keys |
+| `AssetCapabilities`, `ROLE_CAPABILITIES` | Type system extensions for asset role system |
+| `FONT`, `FONT_MONO` in `theme.ts` | Theme API constants for styling |
+| `get_sweep_endpoint()` in radar modules | Utility getter methods on Radar class |
+| `_interceptors_launched` in `simulation_runner.py` | Part of simulation runner state tracking |
 
-## Disk Space Recovered
+## 4. Imports Cleaned
 
-| Category | Est. Size |
+All files reviewed for unused imports. Changes documented in section 3 above.
+
+## 5. File Organization
+
+No physical file moves were necessary. The repository structure was already consistent:
+
+- `backend/` — FastAPI server, simulation engine, policies, tests
+- `frontend/` — React + TypeScript + Vite web UI, Tauri desktop wrapper
+- `controller/`, `model/`, `view/` — Legacy PyQt6 desktop application
+- `docs/` — Project documentation (ARCHITECTURE, TRAINING, EVALUATION, CONTRIBUTING, BOT_API)
+- `training/` — RL training scripts
+- `evaluation/` — Tournament results data
+- Root — Entry points (`main.py`, `desktop.py`, `run.bat`, `build.bat`, `build_release.bat`), configuration (`iads-server.spec`), README, `.gitignore`
+
+## 6. .gitignore Updated
+
+Replaced with professional, organized version containing clear sections:
+
+- Python: bytecode, virtual environments, testing/coverage, packaging
+- Node/TypeScript: node_modules, Vite cache, build output, `.env` files
+- Rust/Tauri: build artifacts, sidecar binaries, debug symbols
+- Training: intermediate checkpoints, TensorBoard logs
+- Build artifacts: PyInstaller outputs, `.exe`, `.msi`
+- IDEs: VS Code, JetBrains, Vim
+- OS: Windows, macOS hidden files
+- Logs & runtime: `.log`, `.pid`, npm debug logs
+
+## 7. README Consistency
+
+Fixed tournament example in README:
+- Added `sys.path.insert(0, 'backend')` so the example works from root
+- Fixed model path from `'models/ppo_iads.zip'` to `'backend/simulation/models/ppo_iads.zip'`
+
+## 8. Dependencies Audit
+
+### Python (`backend/requirements.txt`)
+
+**Removed** (unused):
+- `scipy>=1.14.0` — not imported anywhere
+- `matplotlib>=3.9.0` — not imported anywhere
+- `seaborn>=0.13.0` — not imported anywhere
+
+**Added** (missing):
+- `pyqtgraph>=0.13.0` — imported by `view/main_window.py`
+
+**Retained** (indirect dependency):
+- `websockets>=14.1` — required at runtime by FastAPI/uvicorn for WebSocket support
+
+### npm (`frontend/package.json`)
+
+No changes needed. All dependencies are actively used. No missing or unused packages found.
+
+## 9. Pre-existing TypeScript Bugs Fixed
+
+| File | Issue | Fix |
+|---|---|---|
+| `frontend/src/App.tsx` | `TrackFilter` type was missing (imported by 2 components but never defined) | Added `TrackFilter` type export |
+| `frontend/src/components/TournamentResults.tsx` | `NeverLaunch` missing from `Record<PolicyId, string>` in two `colorMap` instances | Added `NeverLaunch` mapping |
+| `frontend/src/components/TacticalDisplay.tsx` | `mini` prop passed to `PPIDisplay` but not in Props interface | Removed dead `mini` prop |
+| `frontend/src/renderer/drawCoverage.ts` | `engagementRange` / `defendedRadius` possibly undefined despite filter | Added type predicates to `.filter()` calls |
+
+## 10. Verification Results
+
+| Check | Status |
 |---|---|
-| Tournament result dirs | ~180 KB |
-| Session notes | ~45 KB |
-| Empty dirs | 0 |
-| Training artifact | ~100 KB |
-| **Total** | **~325 KB** |
+| Python core simulation imports | ✅ Passed |
+| Python tournament framework (5 runs × 3 policies) | ✅ Passed (15 simulations completed) |
+| ScenarioGenerator instantiation | ✅ Passed |
+| TypeScript compilation (`tsc -b`) | ✅ Clean (0 errors) |
+| Vite production build | ✅ Passed (2.14s, 3 output files) |
+| stable-baselines3 / PPO model loading | ⚠️ Requires venv with `pip install -r backend/requirements.txt` |
+| WebSocket server import | ✅ Passed (requires venv for SB3) |
 
-(Note: `frontend/src-tauri/target/` Rust build cache was left in place at ~500 MB — removing it would free significant space but requires a rebuild.)
+## 11. Items Intentionally Left Untouched
 
-## Remaining Technical Debt
-
-1. **Duplicate simulation implementations**: `model/simulation.py` (PyQt6 desktop app) and `backend/simulation/simulator.py` + `physics.py` (server) share ~60% code overlap. The desktop classes (`Track`, `Interceptor`, `Explosion`, `Radar`, `Simulation`) are simplified copies without jamming, swarms, inventory, or leaker logic. Recommended: unify into a single simulation package.
-
-2. **TrainedPolicy not wired into server**: `trained_policy.py` is importable but not registered in `simulation_runner.py`'s `_POLICY_MAP`. The PPO model cannot be selected at runtime from the WebSocket UI.
-
-3. **No test suite**: The `tests/` directory is empty. There are no unit tests for the simulation engine, policies, or server.
-
-4. **No CI/CD configuration**: No GitHub Actions or similar pipeline for automated testing.
-
-5. **Rust build artifacts**: `frontend/src-tauri/target/` contains ~500 MB of Rust build cache. These are regenerable with `cargo build` but consume significant disk space.
-
-6. **Legacy PyQt6 desktop app**: `main.py`, `controller/`, `model/`, `view/` — functional but superseded by the web frontend. The two code paths maintain duplicate physics models.
-
-7. **Root-level entry points**: `desktop.py` and `main.py` at the repository root are convenient but clutter the top level. Consider moving to `backend/`.
-
-## Recommendations Before Open-Sourcing
-
-- [ ] **Unify simulation models**: Merge `model/simulation.py` into `backend/simulation/` or retire the desktop app.
-- [ ] **Add license file**: Choose an open-source license (MIT recommended).
-- [ ] **Create `.gitignore`**: Exclude `venv/`, `node_modules/`, `__pycache__/`, `*.pyc`, `.rustc_info.json`, `frontend/src-tauri/target/`.
-- [ ] **Write unit tests**: At minimum for `simulator.py`, `physics.py`, `radar.py`, `policies.py`.
-- [ ] **Set up CI**: GitHub Actions with `pip install -r backend/requirements.txt` and `pytest`.
-- [ ] **Remove Rust build cache**: `Remove-Item -Recurse frontend/src-tauri/target/` (will be rebuilt on demand).
-- [ ] **Add `.env.example`**: Document any environment variables needed (none currently).
-- [ ] **Wire TrainedPolicy into server**: Add to `_POLICY_MAP` in `simulation_runner.py`.
+| Item | Justification |
+|---|---|
+| Legacy PyQt6 desktop app (`controller/`, `model/`, `view/`, `main.py`) | Functional legacy code path; no duplicate with server code |
+| `engine/` directory does not exist | First exploration agent hallucinated this — was never on disk |
+| `backend/simulation/tournament.py` entires file | CLI tool; works correctly when run directly |
+| `backend/simulation/scenario_generator.py` entire file | Public utility API, documented in ARCHITECTURE.md |
+| Root-level entry points (`main.py`, `desktop.py`, `run.bat`, etc.) | Convenient for developers cloning the repo |

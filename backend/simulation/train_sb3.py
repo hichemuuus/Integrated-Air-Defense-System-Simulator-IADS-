@@ -2,7 +2,6 @@ import os
 import sys
 import time
 import argparse
-import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import CheckpointCallback
 from stable_baselines3.common.vec_env import SubprocVecEnv

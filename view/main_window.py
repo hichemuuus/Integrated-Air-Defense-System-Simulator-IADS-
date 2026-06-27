@@ -19,7 +19,6 @@ TEXT_DIM = "#484F58"
 COLOR_HOSTILE = "#FF4444"
 COLOR_INTERCEPTOR = "#FF8C00"
 COLOR_FRIENDLY = "#4A9EFF"
-COLOR_UNKNOWN = "#FFD700"
 GRID_CYAN = "#00FFFF"
 SWEEP = "#00FFAA"
 
@@ -254,9 +253,6 @@ class MainWindow(QMainWindow):
 
     def log_intercept(self, msg):
         self.intercept_text.append(msg)
-
-    def clear_threats(self):
-        self.threat_text.clear()
 
     def clear_intercepts(self):
         self.intercept_text.clear()

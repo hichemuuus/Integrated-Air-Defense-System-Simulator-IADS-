@@ -1,4 +1,3 @@
-import os
 import time
 import threading
 from queue import Queue, Empty

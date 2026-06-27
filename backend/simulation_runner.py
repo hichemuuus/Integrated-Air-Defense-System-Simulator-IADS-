@@ -1,6 +1,5 @@
 import os
 import time
-import json
 import threading
 import numpy as np
 from dataclasses import dataclass, field

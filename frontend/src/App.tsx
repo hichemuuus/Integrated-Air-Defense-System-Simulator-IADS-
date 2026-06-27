@@ -12,13 +12,14 @@ import AIDecisionFeed from './components/AIDecisionFeed'
 import LiveMetrics from './components/LiveMetrics'
 import PolicySelector from './components/PolicySelector'
 import PolicyComparison from './components/PolicyComparison'
-import TournamentResults from './components/TournamentResults'
 import TimelineReplay from './components/TimelineReplay'
 import TacticalSummary from './components/TacticalSummary'
 import SectorAnalysis from './components/SectorAnalysis'
 import MissionTimeline from './components/MissionTimeline'
 import AlertRibbon from './components/AlertRibbon'
 import type { AIDecision } from './types'
+
+export type TrackFilter = 'ALL' | 'HOSTILE' | 'FRIENDLY' | 'INTERCEPTOR'
 
 export interface Overlays {
   grid: boolean
@@ -224,7 +225,6 @@ export default function App() {
   const [leftTab, setLeftTab] = useState<'scenario' | 'policy'>('scenario')
   const [rightTab, setRightTab] = useState<'feed' | 'timeline'>('feed')
   const [showComparison, setShowComparison] = useState(false)
-  const [showTournament, setShowTournament] = useState(false)
   const [utcTime, setUtcTime] = useState(new Date().toUTCString().split(' ')[4])
   useEffect(() => {
     const id = setInterval(() => setUtcTime(new Date().toUTCString().split(' ')[4]), 1000)
@@ -275,7 +275,7 @@ export default function App() {
       'l': () => toggleOverlay('labels'),
       'd': () => toggleOverlay('radar'),
       'f': () => { setFullscreen(v => !v); document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen() },
-      'escape': () => { setSelectedTrack(null); setContextMenu(null); setShowComparison(false); setShowTournament(false) },
+      'escape': () => { setSelectedTrack(null); setContextMenu(null); setShowComparison(false) },
     }), [sendControl, toggleOverlay, simulationState])
   )
 
@@ -461,10 +461,6 @@ export default function App() {
 
       {showComparison && (
         <PolicyComparison onClose={() => setShowComparison(false)} onControl={sendControl} />
-      )}
-
-      {showTournament && (
-        <TournamentResults onClose={() => setShowTournament(false)} />
       )}
     </div>
   )

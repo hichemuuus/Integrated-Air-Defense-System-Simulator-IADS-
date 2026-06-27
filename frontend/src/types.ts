@@ -1,7 +1,6 @@
 export type Classification = 'HOSTILE' | 'FRIENDLY' | 'INTERCEPTOR'
 export type TrackType = 'STANDARD' | 'JAMMER' | 'SWARM'
 export type PolicyId = 'PPO_800k' | 'Baseline' | 'JamFirst' | 'UnjamFirst' | 'NeverLaunch'
-export type ViewMode = 'command' | 'comparison' | 'tournament'
 
 export type AssetRole = 'HighValueAsset' | 'SurfaceToAirSite' | 'NavalDefenseAsset' | 'FriendlyAircraft'
 

@@ -47,12 +47,6 @@ def pct(a, b):
     return (a - b) / b * 100
 
 
-def fmt(val):
-    if isinstance(val, float) and val == float('inf'):
-        return "  inf  "
-    return f"{val:>+7.1f}"
-
-
 def fmt_delta(val):
     if isinstance(val, float) and val == float('inf'):
         return "   inf "

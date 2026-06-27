@@ -30,6 +30,7 @@ function ViolinBar({ entry, maxScore }: { entry: typeof TOURNAMENT_DATA.entries[
     Baseline: '#6E7B8A',
     JamFirst: '#FF8C00',
     UnjamFirst: '#58A6FF',
+    NeverLaunch: '#FF4444',
   }
   const color = colorMap[entry.policy]
 
@@ -109,6 +110,7 @@ export default function TournamentResults({ onClose }: Props) {
                 Baseline: '#6E7B8A',
                 JamFirst: '#FF8C00',
                 UnjamFirst: '#58A6FF',
+                NeverLaunch: '#FF4444',
               }
               return (
                 <div key={e.policy} className="panel rounded-sm p-2 text-center">

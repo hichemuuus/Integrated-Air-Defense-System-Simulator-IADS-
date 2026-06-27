@@ -551,9 +551,6 @@ class Simulation:
             "stats": dict(self._stats),
         }
 
-    def clear_events(self):
-        self._events = []
-
     @staticmethod
     def _format_ts(sim_time):
         h = int(sim_time // 3600)

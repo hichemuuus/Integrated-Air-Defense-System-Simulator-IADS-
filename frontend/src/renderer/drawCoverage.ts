@@ -10,7 +10,8 @@ export function drawCoverageEnvelopes(
   simTime: number
 ) {
   const defensive = tracks.filter(
-    t => t.visible && t.engagementRange != null && t.engagementRange > 0
+    (t): t is Track & { engagementRange: number } =>
+      t.visible && t.engagementRange != null && t.engagementRange > 0
   )
 
   ctx.save()
@@ -56,7 +57,8 @@ export function drawProtectionZones(
   simTime: number
 ) {
   const hvas = tracks.filter(
-    t => t.visible && t.assetRole === 'HighValueAsset' && t.defendedRadius != null && t.defendedRadius > 0
+    (t): t is Track & { defendedRadius: number } =>
+      t.visible && t.assetRole === 'HighValueAsset' && t.defendedRadius != null && t.defendedRadius > 0
   )
 
   ctx.save()

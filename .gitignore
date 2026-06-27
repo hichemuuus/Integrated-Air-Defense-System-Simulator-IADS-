@@ -1,36 +1,131 @@
+# ──────────────────────────────────────────────
 # Python
-venv/
+# ──────────────────────────────────────────────
+
+# Bytecode & caches
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+virtualenv/
+
+# Testing & coverage
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage/
+htmlcov/
+.tox/
+.nox/
+
+# Packaging & distribution
 *.egg-info/
+*.egg
 dist/
+build/
+*.whl
+MANIFEST
 
+# ──────────────────────────────────────────────
+# Node / TypeScript (Vite)
+# ──────────────────────────────────────────────
 
-# Node
+node_modules/
 frontend/node_modules/
+
+# Vite cache & build output
+.vite/
 frontend/dist/
-
-# Training model artifacts (shipped models in backend/models/ are versioned)
-backend/simulation/models/*.zip
-
-# Rust / Tauri
-frontend/src-tauri/target/
-frontend/src-tauri/binaries/
-
-# Editor
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-Thumbs.db
-.DS_Store
-
-# Runtime
-backend_pid.txt
 
 # TypeScript build info
 *.tsbuildinfo
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# ──────────────────────────────────────────────
+# Rust / Tauri
+# ──────────────────────────────────────────────
+
+# Rust build artifacts
+frontend/src-tauri/target/
+
+# Tauri sidecar binaries
+frontend/src-tauri/binaries/
+
+# Windows debug symbols
+*.pdb
+
+# ──────────────────────────────────────────────
+# Training Artifacts
+# ──────────────────────────────────────────────
+
+# Intermediate checkpoints & temporary models
+# (versioned models in backend/models/ are tracked)
+backend/simulation/models/*.zip
+
+# TensorBoard / experiment logs
+runs/
+lightning_logs/
+
+# ──────────────────────────────────────────────
+# Build Artifacts (PyInstaller)
+# ──────────────────────────────────────────────
+
+# PyInstaller output (already covered by dist/ above)
+*.exe
+*.msi
+
+# ──────────────────────────────────────────────
+# IDEs & Editors
+# ──────────────────────────────────────────────
+
+# VS Code
+.vscode/
+.vs/
+
+# JetBrains
+.idea/
+*.iml
+
+# Vim / NeoVim
+*.swp
+*.swo
+*.swn
+*.swm
+*.swl
+*.session
+
+# VS local history
+.history/
+
+# ──────────────────────────────────────────────
+# OS Files
+# ──────────────────────────────────────────────
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# ──────────────────────────────────────────────
+# Logs & Runtime
+# ──────────────────────────────────────────────
+
+*.log
+*.pid
+npm-debug.log*
