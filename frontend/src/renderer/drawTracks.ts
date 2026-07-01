@@ -1,4 +1,4 @@
-import { COLORS, WORLD } from '../theme'
+import { COLORS } from '../theme'
 import type { Track, ThreatAlert } from '../types'
 import type { TrackStyle } from './canvasRenderer'
 

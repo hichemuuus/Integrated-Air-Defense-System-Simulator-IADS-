@@ -1,4 +1,4 @@
-import { COLORS, WORLD } from '../theme'
+import { WORLD } from '../theme'
 
 const SECTOR_LABELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 const SECTOR_COUNT = SECTOR_LABELS.length

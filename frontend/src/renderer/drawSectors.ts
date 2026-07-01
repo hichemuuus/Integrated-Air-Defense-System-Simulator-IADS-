@@ -16,7 +16,7 @@ function getOctantIndex(bearingDeg: number): number {
   return Math.floor(normalized / 45) % OCTANT_COUNT
 }
 
-export interface OctantThreatData {
+interface OctantThreatData {
   index: number
   hostileCount: number
   cumulativeScore: number

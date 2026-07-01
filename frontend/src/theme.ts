@@ -32,9 +32,6 @@ export const COLORS = {
   labelBg: 'rgba(11, 15, 23, 0.85)',
 } as const
 
-export const FONT = "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif"
-export const FONT_MONO = "'JetBrains Mono', 'Consolas', 'Courier New', monospace"
-
 export const WORLD = {
   min: -12000,
   max: 12000,

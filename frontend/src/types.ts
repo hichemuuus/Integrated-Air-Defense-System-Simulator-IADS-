@@ -4,30 +4,6 @@ export type PolicyId = 'PPO_800k' | 'Baseline' | 'JamFirst' | 'UnjamFirst' | 'Ne
 
 export type AssetRole = 'HighValueAsset' | 'SurfaceToAirSite' | 'NavalDefenseAsset' | 'FriendlyAircraft'
 
-export interface AssetCapabilities {
-  defendable: boolean
-  interceptorLauncher: boolean
-  mobile: boolean
-  protected: boolean
-  surveillanceOnly: boolean
-}
-
-export const ROLE_CAPABILITIES: Record<AssetRole, AssetCapabilities> = {
-  HighValueAsset: { defendable: true, interceptorLauncher: false, mobile: false, protected: true, surveillanceOnly: false },
-  SurfaceToAirSite: { defendable: false, interceptorLauncher: true, mobile: false, protected: false, surveillanceOnly: false },
-  NavalDefenseAsset: { defendable: false, interceptorLauncher: true, mobile: true, protected: false, surveillanceOnly: false },
-  FriendlyAircraft: { defendable: false, interceptorLauncher: false, mobile: true, protected: false, surveillanceOnly: true },
-}
-
-export interface SectorThreatData {
-  sectorIndex: number
-  hostileCount: number
-  cumulativeThreatScore: number
-  averagePriority: number
-  color: string
-  opacity: number
-}
-
 export interface RadarSite {
   id: number
   x: number
@@ -109,19 +85,6 @@ export interface EventEntry {
   message: string
 }
 
-export interface SimData {
-  simTime: number
-  tracks: Track[]
-  interceptors: Track[]
-  explosions: Explosion[]
-  missMarkers: MissMarker[]
-  radarSites: RadarSite[]
-  threats: ThreatAlert[]
-  events: EventEntry[]
-  running: boolean
-  stats: { kills: number; misses: number; launched: number; leakers: number; threats_engaged: number[]; inventory_remaining: number }
-}
-
 export interface ScenarioConfig {
   numHostiles: number
   numFriendlies: number
@@ -130,13 +93,6 @@ export interface ScenarioConfig {
   swarmMode: boolean
   threatSpeed: number
   randomSeed: number
-}
-
-export interface PolicyInfo {
-  id: PolicyId
-  name: string
-  description: string
-  avgScore: number
 }
 
 export interface AIDecision {
@@ -165,18 +121,4 @@ export interface ComparisonState {
   winner: PolicyId | null
 }
 
-export interface TournamentEntry {
-  policy: PolicyId
-  meanScore: number
-  ciLow: number
-  ciHigh: number
-  stdDev: number
-  wins: number
-}
 
-export interface TournamentData {
-  entries: TournamentEntry[]
-  totalSeeds: number
-  bugFixDescription: string
-  significanceSummary: string
-}

@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSimStore } from '../store/simulationStore'
 
 interface MiniSparklineProps {

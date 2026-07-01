@@ -1,5 +1,3 @@
-import { COLORS } from '../theme'
-
 export function drawBackgroundSweep(
   ctx: CanvasRenderingContext2D,
   cx: number,

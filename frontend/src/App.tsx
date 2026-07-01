@@ -4,7 +4,6 @@ import { useSimStore } from './store/simulationStore'
 import type { Toast } from './store/simulationStore'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import TacticalDisplay from './components/TacticalDisplay'
-import Scene3D from './features/visualization3d/Scene3D'
 import SimulationControls from './components/SimulationControls'
 import TrackDetail from './components/TrackDetail'
 import ContextMenu from './components/ContextMenu'
@@ -15,6 +14,7 @@ import PolicySelector from './components/PolicySelector'
 import PolicyComparison from './components/PolicyComparison'
 import TimelineReplay from './components/TimelineReplay'
 import TacticalSummary from './components/TacticalSummary'
+import OperationalAssessment from './OperationalAssessment/OperationalAssessment'
 import SectorAnalysis from './components/SectorAnalysis'
 import MissionTimeline from './components/MissionTimeline'
 import AlertRibbon from './components/AlertRibbon'
@@ -225,20 +225,22 @@ export default function App() {
     }
   }, [addToast])
 
-  const [viewMode, setViewMode] = useState<'tactical' | 'cinematic'>('tactical')
   const [overlays, setOverlays] = useState<Overlays>({
     grid: true, radar: true, trails: true, labels: true,
   })
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; trackId: number } | null>(null)
   const [fullscreen, setFullscreen] = useState(false)
+
   const [leftTab, setLeftTab] = useState<'scenario' | 'policy'>('scenario')
-  const [rightTab, setRightTab] = useState<'feed' | 'timeline'>('feed')
+  const [rightTab, setRightTab] = useState<'feed' | 'timeline' | 'assessment'>('assessment')
   const [showComparison, setShowComparison] = useState(false)
   const [utcTime, setUtcTime] = useState(new Date().toUTCString().split(' ')[4])
   useEffect(() => {
     const id = setInterval(() => setUtcTime(new Date().toUTCString().split(' ')[4]), 1000)
     return () => clearInterval(id)
   }, [])
+
+
 
   const prevEventCount = useRef(0)
 
@@ -299,22 +301,7 @@ export default function App() {
           <ToastContainer />
         <header className="flex-shrink-0 flex items-center justify-between px-4 py-1.5 border-b overflow-visible" style={{ minHeight: '40px', borderColor: 'rgba(255,255,255,0.06)', background: '#111827' }}>
           <div className="flex items-center gap-2 shrink min-w-0 overflow-visible">
-            <span className="text-3xs font-mono font-bold tracking-[0.1em] text-white/70 whitespace-nowrap">// IADS // SIM MODE</span>
-            <span className="text-3xs text-white/[0.15]">|</span>
-            <button
-              onClick={() => setViewMode(v => v === 'tactical' ? 'cinematic' : 'tactical')}
-              className="px-2 py-1 text-3xs font-bold uppercase tracking-wider transition-colors"
-              style={{
-                color: viewMode === 'cinematic' ? '#3DDCFF' : 'rgba(255,255,255,0.3)',
-                border: '1px solid',
-                borderColor: viewMode === 'cinematic' ? 'rgba(61,220,255,0.3)' : 'rgba(255,255,255,0.08)',
-                borderRadius: '1px',
-                background: viewMode === 'cinematic' ? 'rgba(61,220,255,0.08)' : 'transparent',
-                fontFamily: "'JetBrains Mono', monospace",
-              }}
-            >
-              {viewMode === 'tactical' ? '2D TAC' : '3D CIN'}
-            </button>
+            <span className="text-3xs font-mono font-bold tracking-[0.1em] text-white/70 whitespace-nowrap">// SYNTRA // COMMAND</span>
             <span className="text-3xs text-white/[0.15]">|</span>
             <div className="flex items-center gap-1.5 overflow-visible flex-shrink-0">
               <SimulationControls
@@ -414,39 +401,46 @@ export default function App() {
               <SectorAnalysis />
             </div>
           </div>
-          <div className="flex-1 relative">
-            {viewMode === 'tactical' ? (
-              <>
-                <TacticalDisplay
-                  overlays={overlays}
-                  onContextMenu={setContextMenu}
-                />
-                {selectedTrack && (
-                  <TrackDetail track={selectedTrack} onClose={() => setSelectedTrack(null)} onLaunch={() => {
-                    if (selectedTrack.classification === 'HOSTILE') {
-                      sendControl('launch', { target_id: selectedTrack.id })
-                      setSelectedTrack(null)
-                    }
-                  }} />
-                )}
-                {contextMenu && (
-                  <ContextMenu
-                    x={contextMenu.x}
-                    y={contextMenu.y}
-                    trackId={contextMenu.trackId}
-                    onLaunch={(id) => { sendControl('launch', { target_id: id }); setContextMenu(null) }}
-                    onClose={() => setContextMenu(null)}
-                  />
-                )}
-              </>
-            ) : (
-              <Scene3D />
+          <div
+            className="flex-1 relative"
+            style={{ minHeight: '200px' }}
+          >
+            <TacticalDisplay
+              overlays={overlays}
+              onContextMenu={setContextMenu}
+            />
+            {selectedTrack && (
+              <TrackDetail track={selectedTrack} onClose={() => setSelectedTrack(null)} onLaunch={() => {
+                if (selectedTrack.classification === 'HOSTILE') {
+                  sendControl('launch', { target_id: selectedTrack.id })
+                  setSelectedTrack(null)
+                }
+              }} />
+            )}
+            {contextMenu && (
+              <ContextMenu
+                x={contextMenu.x}
+                y={contextMenu.y}
+                trackId={contextMenu.trackId}
+                onLaunch={(id) => { sendControl('launch', { target_id: id }); setContextMenu(null) }}
+                onClose={() => setContextMenu(null)}
+              />
             )}
           </div>
         </div>
 
         <div className="flex-shrink-0 flex flex-col overflow-hidden border-l" style={{ width: '320px', maxWidth: '320px', borderColor: 'rgba(255,255,255,0.06)' }}>
           <div className="flex-shrink-0 flex" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <button
+              onClick={() => setRightTab('assessment')}
+              className={`flex-1 py-2 text-3xs font-semibold uppercase tracking-wider transition-colors ${
+                rightTab === 'assessment'
+                  ? 'text-white border-b-2 border-white/40 bg-white/[0.03]'
+                  : 'text-muted hover:text-text'
+              }`}
+            >
+              Assessment
+            </button>
             <button
               onClick={() => setRightTab('feed')}
               className={`flex-1 py-2 text-3xs font-semibold uppercase tracking-wider transition-colors ${
@@ -469,7 +463,9 @@ export default function App() {
             </button>
           </div>
           <div className="flex-1 overflow-hidden p-2.5">
-            {rightTab === 'feed' ? (
+            {rightTab === 'assessment' ? (
+              <OperationalAssessment />
+            ) : rightTab === 'feed' ? (
               <AIDecisionFeed />
             ) : (
               <MissionTimeline />

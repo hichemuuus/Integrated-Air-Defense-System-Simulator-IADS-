@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, useState, type ReactNode } from 'react'
+import { useRef, useEffect, useCallback, useState } from 'react'
 import { useSimStore } from '../store/simulationStore'
 import { renderFrame, type TrackStyle, type ViewTransform } from '../renderer/canvasRenderer'
 import PPIDisplay from './PPIDisplay'

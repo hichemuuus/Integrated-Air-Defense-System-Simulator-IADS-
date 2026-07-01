@@ -84,9 +84,5 @@ export function useComparisonBackend() {
     })
   }, [send, getState])
 
-  const setPolicy = useCallback((which: 'A' | 'B', policyName: PolicyId) => {
-    send('set_policy', { which, policy_name: policyName })
-  }, [send])
-
-  return { restart, setPolicy }
+  return { restart }
 }

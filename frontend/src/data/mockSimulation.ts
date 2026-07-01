@@ -22,7 +22,7 @@ const SWARM_MAX_SIZE = 6
 const LEAKER_THRESHOLD = 2000
 const JAMMER_SPAWN_CHANCE = 0.20
 
-export class SimState {
+class SimState {
   nextId = 100
   nextEventId = 1
   simTime = 0
@@ -833,7 +833,7 @@ export function stepSimulation(
   return stepSimulationWithState(GLOBAL, tracks, interceptors, explosions, missMarkers, radarSites, threats, events, destroyedGhosts, dt, 'Baseline', scenario)
 }
 
-export function createSimInstance(scenario: ScenarioConfig, policyId: PolicyId) {
+function createSimInstance(scenario: ScenarioConfig, policyId: PolicyId) {
   const state = new SimState()
   const trackResult = createInitialTracksWithState(state, scenario)
   return {
