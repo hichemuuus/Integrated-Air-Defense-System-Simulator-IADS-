@@ -1,8 +1,19 @@
-# Integrated Air Defense System (IADS) Simulator
+# Syntra Command
 
-A real-time air defense simulation framework with reinforcement learning (PPO) training, a WebSocket bot API, and a React-based command center UI. Designed for modeling multi-domain engagement scenarios — radar sweeps, jamming, swarms, interceptor guidance, and policy-driven threat prioritization — with the ability to train, evaluate, and compare air defense AI agents.
+Syntra Command is an AI-powered Command & Control platform designed for real-time tactical visualization, reinforcement learning research, and autonomous air defense simulation.
 
-The project demonstrates a complete ML + systems engineering pipeline: a discrete-event simulation engine, a Gymnasium RL environment, a Stable-Baselines3 PPO training loop, a 1,000-seed tournament evaluation framework, and a Tauri desktop application with a real-time tactical display.
+Its flagship demonstration environment is a high-fidelity Integrated Air Defense System (IADS) simulator featuring:
+
+• Real-time tactical command center
+• Reinforcement learning agents (PPO)
+• 2D tactical display
+• Real-time tactical display
+• Policy evaluation framework
+• Tournament system
+• FastAPI backend
+• Tauri desktop application
+
+The IADS simulator demonstrates a complete ML + systems engineering pipeline: a discrete-event simulation engine, a Gymnasium RL environment, a Stable-Baselines3 PPO training loop, a 1,000-seed tournament evaluation framework, and a Tauri desktop application with a real-time tactical display.
 
 ---
 
@@ -126,7 +137,7 @@ t.save_csv('results.csv')
 
 ```powershell
 # From repository root (with venv activated)
-python -m simulation.train_sb3 --timesteps 1000000
+
 
 # Or use the convenience script
 .\training\run_training.ps1
@@ -139,9 +150,7 @@ python -m simulation.train_sb3 --timesteps 1000000
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    Entry Points                          │
-│  run.bat ── desktop.py ──┐                              │
-│  main.py ────────────────┼── Legacy PyQt6 Desktop App   │
-└──────────────────────────┴──────────────────────────────┘
+└──────────────────────────────────────────────────────────┘
                            │
 ┌──────────────────────────▼──────────────────────────────┐
 │              Backend Server (FastAPI)                     │
@@ -154,9 +163,8 @@ python -m simulation.train_sb3 --timesteps 1000000
 │         │  radar.py           │  radar, engagement       │
 │         │  policies.py        │  Heuristic policies      │
 │         │  trained_policy.py  │  PPO model wrapper       │
-│         │  tournament.py      │  Multi-seed evaluation   │
 │         │  gym_env/env.py     │  RL training env         │
-│         │  train_sb3.py       │  Training script         │
+
 │         └─────────────────────┘                           │
 └──────────────────────────────────────────────────────────┘
                            │
@@ -204,9 +212,7 @@ backend/
     policies.py             # BaselinePolicy, PriorityPolicy, JamFirst/UnjamFirst
     trained_policy.py       # PPO model wrapper (SB3)
     observation_encoder.py  # RL observation encoding
-    tournament.py           # Multi-seed tournament framework
-    scenario_generator.py   # Scenario configuration generator
-    train_sb3.py            # PPO training script
+
     gym_env/                # Gymnasium RL environment
       __init__.py
       env.py                # IADSGymEnv — action space, reward, step
@@ -215,16 +221,14 @@ backend/
   server.py                 # FastAPI WebSocket + HTTP server
   simulation_runner.py      # Background simulation thread with command queue
   comparison_coordinator.py # Lockstep A/B policy comparison
-  compare_policies.py       # CLI script for batch policy comparison
+
   requirements.txt
   tests/                    # pytest test suite
     test_trained_policy.py
     test_observation_encoder.py
     test_comparison_coordinator.py
     test_integration.py
-controller/                 # Legacy PyQt6 desktop app controller
-model/                      # Legacy PyQt6 desktop app model
-view/                       # Legacy PyQt6 desktop app view
+
 frontend/                   # Web-based UI (React + TypeScript + Vite + Tailwind)
   package.json
   vite.config.ts
@@ -310,7 +314,7 @@ After 800,000 steps of PPO training, the AI agent achieves **statistical parity*
 
 ## Roadmap
 
-- [ ] **Unify simulation models**: Merge legacy PyQt6 `model/simulation.py` with `backend/simulation/` or retire the desktop app
+
 - [x] **Add license file**: MIT License
 - [ ] **CI/CD pipeline**: GitHub Actions with automated testing and linting
 - [ ] **Expand test coverage**: Unit tests for simulator, physics, radar, and policies
