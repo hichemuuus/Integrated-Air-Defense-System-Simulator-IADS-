@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "IADS WebSocket Protocol",
+  "title": "Syntra WebSocket Protocol",
   "description": "Server-to-client state push and client-to-server control messages",
 
   "definitions": {
@@ -83,7 +83,7 @@
   },
 
   "serverToClient": {
-    "description": "JSON object pushed from server to client every ~16ms",
+    "description": "Syntra Command server-to-client state push every ~16ms",
     "type": "object",
     "properties": {
       "simTime": { "type": "number" },

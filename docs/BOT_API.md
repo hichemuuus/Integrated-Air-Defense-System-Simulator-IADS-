@@ -1,4 +1,4 @@
-# IADS Bot API — WebSocket Protocol
+# Syntra Bot API — WebSocket Protocol
 
 Connect an external AI agent to control the simulation in real time.
 

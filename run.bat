@@ -1,5 +1,5 @@
 @echo off
-title IADS Command Center — Development Mode
+title Syntra Command — Development Mode
 cd /d "%~dp0"
 
 echo.

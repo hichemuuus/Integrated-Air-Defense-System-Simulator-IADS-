@@ -1,5 +1,7 @@
 # Contributing
 
+Syntra Command is an AI-powered Command & Control platform. Contributions to the IADS simulator and surrounding platform are welcome.
+
 ## Getting Started
 
 ### Prerequisites

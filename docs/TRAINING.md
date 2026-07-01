@@ -1,5 +1,7 @@
 # Training
 
+The Syntra Command platform includes a full reinforcement learning training pipeline for the Integrated Air Defense System (IADS) simulator.
+
 ## RL Environment
 
 The training environment is `IADSGymEnv` (`backend/simulation/gym_env/env.py`), a Gymnasium environment wrapping the `Simulation` engine.

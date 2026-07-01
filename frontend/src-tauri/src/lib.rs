@@ -242,7 +242,7 @@ pub fn run() {
                         }
                     }
                 })
-                .tooltip("IADS Command Center")
+                .tooltip("Syntra Command")
                 .build(app)?;
 
             Ok(())

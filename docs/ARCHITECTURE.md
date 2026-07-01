@@ -2,7 +2,7 @@
 
 ## System Overview
 
-The IADS Simulator has two independent code paths sharing the same simulation engine:
+Syntra Command is an AI-powered Command & Control platform whose flagship environment is the Integrated Air Defense System (IADS) simulator. The platform has two independent code paths sharing the same simulation engine:
 
 ```
 ┌─────────────────────────────────────────────────┐

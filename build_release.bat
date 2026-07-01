@@ -1,10 +1,10 @@
 @echo off
-title IADS Command Center — Release Build
+title Syntra Command — Release Build
 cd /d "%~dp0"
 
 echo.
 echo  ========================================
-echo    IADS COMMAND CENTER — RELEASE BUILD
+echo    SYNTRA COMMAND — RELEASE BUILD
 echo  ========================================
 echo.
 
@@ -163,23 +163,23 @@ echo.
 
 set "TAURI_DIST=frontend\src-tauri\target\release"
 
-if exist "%TAURI_DIST%\IADS Command Center.exe" (
-    echo  Executable: %TAURI_DIST%\IADS Command Center.exe
+if exist "%TAURI_DIST%\Syntra Command.exe" (
+    echo  Executable: %TAURI_DIST%\Syntra Command.exe
 ) else (
     echo  Executable: %TAURI_DIST%\*.exe (check the release folder)
 )
 
-if exist "%TAURI_DIST%\bundle\nsis\IADS Command Center_1.0.0_x64-setup.exe" (
-    echo  Installer:  %TAURI_DIST%\bundle\nsis\IADS Command Center_1.0.0_x64-setup.exe
+if exist "%TAURI_DIST%\bundle\nsis\Syntra Command_1.0.0_x64-setup.exe" (
+    echo  Installer:  %TAURI_DIST%\bundle\nsis\Syntra Command_1.0.0_x64-setup.exe
 )
 
-if exist "%TAURI_DIST%\bundle\msi\IADS Command Center_1.0.0_x64_en-US.msi" (
-    echo  MSI:        %TAURI_DIST%\bundle\msi\IADS Command Center_1.0.0_x64_en-US.msi
+if exist "%TAURI_DIST%\bundle\msi\Syntra Command_1.0.0_x64_en-US.msi" (
+    echo  MSI:        %TAURI_DIST%\bundle\msi\Syntra Command_1.0.0_x64_en-US.msi
 )
 
 echo.
 echo  To install, run the NSIS installer or MSI.
-echo  To run directly: %TAURI_DIST%\IADS Command Center.exe
+echo  To run directly: %TAURI_DIST%\Syntra Command.exe
 echo.
 
 pause

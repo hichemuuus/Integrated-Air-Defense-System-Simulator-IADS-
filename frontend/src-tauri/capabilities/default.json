@@ -1,6 +1,6 @@
 {
   "identifier": "default",
-  "description": "Default permissions for the IADS Command Center",
+  "description": "Default permissions for Syntra Command",
   "windows": ["main"],
   "permissions": [
     "core:default",

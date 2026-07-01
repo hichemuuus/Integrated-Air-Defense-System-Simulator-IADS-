@@ -48,7 +48,7 @@ function Wait-BackendReady {
 # ============================================================
 # Main
 # ============================================================
-Log "IADS Command Center - Development Mode"
+Log "Syntra Command - Development Mode"
 
 # --- Prerequisites ---
 foreach ($cmd in @("python", "node", "rustc")) {
@@ -105,7 +105,7 @@ Remove-Item (Join-Path $RootDir "backend_pid.txt") -ErrorAction SilentlyContinue
 Free-Ports -Ports @(8000, 3000)
 
 # Kill any Tauri app process still running from a previous session
-Get-Process -Name "IADS Command Center" -ErrorAction SilentlyContinue |
+Get-Process -Name "Syntra Command" -ErrorAction SilentlyContinue |
     ForEach-Object {
         Log ("Killing previous Tauri instance (PID $($_.Id))...")
         taskkill /F /T /PID $_.Id *>$null

@@ -1,5 +1,5 @@
 @echo off
-title IADS Build
+title Syntra Build
 cd /d "%~dp0"
 
 echo.

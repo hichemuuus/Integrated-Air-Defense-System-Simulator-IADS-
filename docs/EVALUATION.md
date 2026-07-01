@@ -1,5 +1,7 @@
 # Evaluation
 
+The Syntra Command platform includes a comprehensive evaluation and tournament framework for the Integrated Air Defense System (IADS) simulator.
+
 ## Tournament Framework
 
 The `Tournament` class (`backend/simulation/tournament.py`) runs N random seeds for each registered policy and produces comparative results.

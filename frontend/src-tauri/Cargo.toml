@@ -1,8 +1,8 @@
 [package]
 name = "iads-command-center"
 version = "1.0.0"
-description = "Integrated Air Defense System Command Center"
-authors = ["IADS"]
+description = "Syntra Command — AI-Powered Command & Control Platform"
+authors = ["Syntra"]
 edition = "2021"
 
 [package.metadata]

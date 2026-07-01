@@ -1,5 +1,5 @@
 {
-  "name": "iads-command-center",
+  "name": "syntra-command",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -10,12 +10,8 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@react-three/drei": "^9.92.7",
-    "@react-three/fiber": "^8.15.12",
-    "@types/three": "^0.160.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "three": "^0.160.0",
     "zustand": "^5.0.0"
   },
   "devDependencies": {

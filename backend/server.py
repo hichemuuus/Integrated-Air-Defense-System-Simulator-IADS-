@@ -20,7 +20,7 @@ def _log_timing(label: str):
 
 _log_timing("import_start")
 
-app = FastAPI(title="IADS Command Center")
+app = FastAPI(title="Syntra Command")
 _log_timing("fastapi_app_created")
 
 app.add_middleware(
@@ -278,7 +278,7 @@ def main():
     import uvicorn
     _log_timing("uvicorn_imported")
     print(f"\n{'='*50}", flush=True)
-    print(f"  IADS Command Center", flush=True)
+    print(f"  Syntra Command — AI-Powered Tactical Command Platform", flush=True)
     print(f"  API + WebSocket: http://{args.host}:{args.port}", flush=True)
     if frontend_dist.is_dir() and (frontend_dist / "index.html").is_file():
         print(f"  Frontend:       http://{args.host}:{args.port}", flush=True)
